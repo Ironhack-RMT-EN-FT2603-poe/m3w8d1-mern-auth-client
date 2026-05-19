@@ -1,4 +1,4 @@
-import axios from "axios";
+import service from "../../services/index.services";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +28,7 @@ function Signup() {
 
     try {
       
-      const response = await axios.post("http://localhost:5005/api/auth/signup", body)
+      const response = await service.post("/auth/signup", body)
       navigate("/login")
 
     } catch (error) {

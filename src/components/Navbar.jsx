@@ -1,14 +1,42 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/auth.context";
 
 function Navbar() {
+
+  const navigate = useNavigate()
+
+  const { setIsLoggedIn, setLoggedUserId, isLoggedIn, setLoggedUserRole } = useContext(AuthContext)
+
+  function handleLogout(e) {
+    e.preventDefault()
+
+    // destroying the token
+    localStorage.removeItem("authToken")
+
+    // revert the states to their initial value
+    setIsLoggedIn(false)
+    setLoggedUserId(null)
+    setLoggedUserRole(null)
+
+    // navigate the user to a public page
+    navigate("/login")
+
+  }
 
   return (
     <nav>
       <Link to="/">Home</Link>
-      <Link to="/signup">Signup</Link>
-      <Link to="/login">Login</Link>
-      <Link to="/private-page-example">Private Page Example</Link>
-      <Link>Logout</Link>
+
+      {!isLoggedIn && <>
+        <Link to="/signup">Signup</Link>
+        <Link to="/login">Login</Link>
+      </>}
+
+      {isLoggedIn && <>
+        <Link to="/private-page-example">Private Page Example</Link>
+        <Link onClick={handleLogout}>Logout</Link>
+      </>}
     </nav>
   );
 }
