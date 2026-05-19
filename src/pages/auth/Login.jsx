@@ -1,8 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/auth.context";
 
 function Login() {
+
+  const { setIsLoggedIn, setLoggedUserId } = useContext(AuthContext)
 
   const navigate = useNavigate()
 
@@ -26,6 +29,16 @@ function Login() {
     try {
       
       const response = await axios.post("http://localhost:5005/api/auth/login", body)
+
+      // storing the token safely in localstorage
+      localStorage.setItem("authToken", response.data.authToken)
+
+      // update the auth context states accordingly
+      setIsLoggedIn(true)
+      setLoggedUserId(response.data.payload._id)
+
+      console.log(response.data)
+
       navigate("/private-page-example")
 
     } catch (error) {
